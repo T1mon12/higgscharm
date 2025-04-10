@@ -88,7 +88,7 @@ PD_DATASETS = {
 }
 DATASETS = {
     "ztoee": {"mc": ["dyjets", "ttbar", "singletop", "diboson"], "data": ["EGamma"]},
-    "ztomumu": {"mc": ["dyjets", "ttbar", "singletop", "diboson"], "data": ["Muon"]},
+    "ztomumu": {"mc": ["dyjets"], "data": ["Muon"]},
     "zzto4l": {
         "mc": ["higgs", "ggtozz", "qqtozz", "ew"],
         "data": ["SingleMuon", "DoubleMuon", "Muon", "MuonEG", "EGamma"],
