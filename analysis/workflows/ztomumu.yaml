@@ -1,4 +1,4 @@
-object_selection:
+gbject_selection:
   muons:
     field: events.Muon
     cuts:
@@ -45,6 +45,7 @@ event_selection:
     electron_veto: ak.num(objects['electrons']) == 0
     two_muons: ak.num(objects['muons']) == 2
     one_dimuon: ak.num(objects['dimuons']) == 1
+    one_jet: ak.num(objects['jets']) == 1
   categories:
     base:
       - trigger
@@ -56,6 +57,7 @@ event_selection:
       - two_muons
       - one_dimuon
       - electron_veto
+      - one_jet
 corrections:
   objects:
     - jets
@@ -78,25 +80,25 @@ histogram_config:
   axes:
     dimuon_mass:
       type: Regular
-      bins: 24
-      start: 60
-      stop: 120
+      bins: 100
+      start: 10
+      stop: 150
       label: $m(\mu\mu)$ [GeV]
-      expression: objects['dimuons'].p4.mass
+      expression: objects['dimuons'].z.mass
     dimuon_pt:
       type: Regular
       bins: 50
       start: 30
       stop: 300
       label: $p_T(\mu\mu)$ [GeV]
-      expression: objects['dimuons'].p4.pt
+      expression: objects['dimuons'].z.pt
     dimuon_dr:
       type: Regular
       bins: 50
       start: 0
       stop: 5
       label: $\Delta R(\mu_1, \mu_2)$
-      expression: objects['dimuons'].l1.delta_r(objects['dimuons'].l2)
+      expression: LorentzVector.delta_r(objects['dimuons'].l1, objects['dimuons'].l2)
     dimuon_deta:
       type: Regular
       bins: 50
@@ -174,26 +176,13 @@ histogram_config:
       stop: 3.14159
       label: $\phi(j)$
       expression: objects['jets'].phi
-    jet_dr:
-      type: Regular
-      bins: 50
-      start: 0
-      stop: 5
-      label: $\Delta R(j_1, j_2)$
-      expression: ak.pad_none(objects['jets'], target=2)[:, 0].delta_r(ak.pad_none(objects['jets'], target=2)[:, 1])
-    jet_deta:
-      type: Regular
-      bins: 50
-      start: 0
-      stop: 5
-      label: $|\Delta \eta(j_1, j_2)|$
-      expression: np.abs(ak.pad_none(objects['jets'], target=2)[:, 0].eta -ak.pad_none(objects['jets'], target=2)[:, 1].eta)
     jet_multiplicity:
-      type: Integer
+      type: Regular
+      bins: 10
       start: 0
-      stop: 14
-      label: $N(j)$
-      expression: ak.num(objects['jets'])
+      stop: 10
+      label: jets multiplicity
+      expression: ak.num(objects['jets’])
     leadingjet_cvsl:
       type: Regular
       bins: 50
@@ -208,42 +197,20 @@ histogram_config:
       stop: 1
       label: Leading Jet CvsB
       expression: ak.pad_none(objects['jets'], target=2)[:, 0].btagPNetCvB
-    leadingjet_flavour:
-      type: IntCategory
-      categories:
-        - 0
-        - 4
-        - 5
-      label: HadronFlavour
-      expression: ak.pad_none(objects['jets'], target=2)[:, 0].hadronFlavour
-    subleadingjet_cvsl:
+    leadingjet_flavour::
       type: Regular
-      bins: 50
+      bins: 6
       start: 0
-      stop: 1
-      label: Subleading Jet CvsL
-      expression: ak.pad_none(objects['jets'], target=2)[:, 1].btagPNetCvL
-    subleadingjet_cvsb:
+      stop: 6
+      label: jets hadronFlavour
+      expression: objects['jets'].hadronFlavour
+    jet_partonflavour:
       type: Regular
-      bins: 50
+      bins: 6
       start: 0
-      stop: 1
-      label: Subleading Jet CvsB
-      expression: ak.pad_none(objects['jets'], target=2)[:, 1].btagPNetCvB
-    subleadingjet_flavour:
-      type: IntCategory
-      categories:
-        - 0
-        - 4
-        - 5
-      label: HadronFlavour
-      expression: ak.pad_none(objects['jets'], target=2)[:, 1].hadronFlavour
-    npvs:
-      type: Integer
-      start: 0
-      stop: 60
-      label: npvs
-      expression: events.PV.npvsGood
+      stop: 6
+      label: jets partonFlavour
+      expression: objects['jets'].partonFlavour
   layout: 
     dimuon_mass: 
       - dimuon_mass
@@ -273,19 +240,13 @@ histogram_config:
       - jet_eta
     jet_phi: 
       - jet_phi
-    jet_dr: 
-      - jet_dr
-    jet_deta: 
-      - jet_deta
     jet_multiplicity: 
       - jet_multiplicity
     leading_jet:
       - leadingjet_flavour
       - leadingjet_cvsb
       - leadingjet_cvsl
-    subleading_jet:
-      - subleadingjet_flavour
-      - subleadingjet_cvsb
-      - subleadingjet_cvsl
-    vertex:
+    partonflavour:
+      - jet_partonflavour
+    vertex
       - npvs
