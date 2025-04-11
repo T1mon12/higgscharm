@@ -1,4 +1,4 @@
-gbject_selection:
+object_selection:
   muons:
     field: events.Muon
     cuts:
@@ -197,20 +197,22 @@ histogram_config:
       stop: 1
       label: Leading Jet CvsB
       expression: ak.pad_none(objects['jets'], target=2)[:, 0].btagPNetCvB
-    leadingjet_flavour::
-      type: Regular
-      bins: 6
-      start: 0
-      stop: 6
-      label: jets hadronFlavour
-      expression: objects['jets'].hadronFlavour
-    jet_partonflavour:
-      type: Regular
-      bins: 6
-      start: 0
-      stop: 6
-      label: jets partonFlavour
-      expression: objects['jets'].partonFlavour
+    leadingjet_hadronflavour:
+      type: IntCategory
+      categories:
+        - 0
+        - 4
+        - 5
+      label: leading jet HadronFlavour
+      expression: ak.pad_none(objects['jets'], target=2)[:, 0].hadronFlavour
+    leadingjet_partonflavour:
+      type: IntCategory
+      categories:
+        - 0
+        - 4
+        - 5
+      label: leading jet partonFlavour
+      expression: ak.pad_none(objects['jets'], target=2)[:, 0].partonFlavour
   layout: 
     dimuon_mass: 
       - dimuon_mass
@@ -240,13 +242,13 @@ histogram_config:
       - jet_eta
     jet_phi: 
       - jet_phi
-    jet_multiplicity: 
+    jet_multiplicity:
       - jet_multiplicity
-    leading_jet:
-      - leadingjet_flavour
+    leadingjet_partonflavour:
+      -  leadingjet_partonflavour
+    leadingjet_hadronflavour:
+      - leadingjet_hadronflavour
+    leadingjet_cvsb:
       - leadingjet_cvsb
+    leadingjet_cvsl:
       - leadingjet_cvsl
-    partonflavour:
-      - jet_partonflavour
-    vertex
-      - npvs
